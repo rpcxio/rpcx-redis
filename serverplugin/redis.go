@@ -235,20 +235,7 @@ func (p *RedisRegisterPlugin) Unregister(name string) (err error) {
 		p.kv = kv
 	}
 
-	err = p.kv.Put(p.BasePath, []byte("rpcx_path"), &store.WriteOptions{IsDir: true})
-	if err != nil && !strings.Contains(err.Error(), "Not a file") {
-		log.Errorf("cannot create redis path %s: %v", p.BasePath, err)
-		return err
-	}
-
-	nodePath := fmt.Sprintf("%s/%s", p.BasePath, name)
-	err = p.kv.Put(nodePath, []byte(name), &store.WriteOptions{IsDir: true})
-	if err != nil && !strings.Contains(err.Error(), "Not a file") {
-		log.Errorf("cannot create redis path %s: %v", nodePath, err)
-		return err
-	}
-
-	nodePath = fmt.Sprintf("%s/%s/%s", p.BasePath, name, p.ServiceAddress)
+	nodePath := fmt.Sprintf("%s/%s/%s", p.BasePath, name, p.ServiceAddress)
 
 	err = p.kv.Delete(nodePath)
 	if err != nil {
